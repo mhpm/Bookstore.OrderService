@@ -10,6 +10,7 @@
 *.pdb
 *.mdb
 *.nupkg
+!LocalNuGetFeed/*.nupkg
 
 ## Archivos y carpetas de Visual Studio / Rider / VS Code
 .vs/
