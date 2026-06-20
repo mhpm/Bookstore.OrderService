@@ -1,0 +1,49 @@
+## Carpetas de Compilación
+**/bin/
+**/obj/
+
+## Archivos binarios y símbolos
+*.dll
+*.exe
+*.so
+*.dylib
+*.pdb
+*.mdb
+*.nupkg
+
+## Archivos y carpetas de Visual Studio / Rider / VS Code
+.vs/
+.vscode/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+## Paquetes y cache de NuGet
+**/packages/
+.nuget/
+
+## Publicaciones y artefactos de despliegue
+**/publish/
+*.Publish.xml
+
+## Archivos de logs y temporales
+*.log
+*.tlog
+*.cache
+*.zip
+*.tar.gz
+
+## Archivos de configuración locales (contienen secretos)
+**/appsettings.Development.json
+
+## Archivos de base de datos locales
+*.db
+*.db-shm
+*.db-wal
+
+## Otros (SO específicos / IDE)
+.DS_Store
+Thumbs.db
+desktop.ini
