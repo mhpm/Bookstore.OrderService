@@ -2,12 +2,19 @@ using MassTransit;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using OrderService.Data;
+using OrderService.Data.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<OrderDbContext>(options =>
     options.UseNpgsql(connectionString));
+
+// DEPENDENCY INVERSION PRINCIPLE (DIP) & DEPENDENCY INJECTION (DI):
+// Registramos el contrato de persistencia IOrderRepository para que sea resuelto
+// automáticamente en cualquier clase que lo necesite (como CreateOrderCommandHandler).
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+
 
 builder.Services.AddControllers();
 builder.Services.AddCors(options =>

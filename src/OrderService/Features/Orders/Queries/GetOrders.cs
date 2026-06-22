@@ -1,6 +1,6 @@
 using MediatR;
-using Microsoft.EntityFrameworkCore;
-using OrderService.Data;
+using OrderService.Data.Repositories;
+using System.Linq;
 
 namespace OrderService.Features.Orders.Queries
 {
@@ -16,33 +16,40 @@ namespace OrderService.Features.Orders.Queries
 
     public record GetOrdersQuery() : IRequest<List<OrderDto>>;
 
+    /// <summary>
+    /// DEPENDENCY INVERSION PRINCIPLE (DIP):
+    /// El Handler de consulta consume IOrderRepository, lo que desacopla la capa de aplicación de EF Core.
+    /// 
+    /// CQRS PATTERN (QUERY):
+    /// Representa una Consulta de lectura (Query). No altera ningún estado y recupera los datos
+    /// utilizando el método del repositorio que implementa AsNoTracking para optimizar el rendimiento.
+    /// </summary>
     public class GetOrdersQueryHandler : IRequestHandler<GetOrdersQuery, List<OrderDto>>
     {
-        private readonly OrderDbContext _context;
+        private readonly IOrderRepository _repository;
 
-        public GetOrdersQueryHandler(OrderDbContext context)
+        public GetOrdersQueryHandler(IOrderRepository repository)
         {
-            _context = context;
+            _repository = repository;
         }
 
         public async Task<List<OrderDto>> Handle(GetOrdersQuery request, CancellationToken cancellationToken)
         {
-            return await _context.Orders
-                .Include(o => o.Items)
-                .OrderByDescending(o => o.OrderDate)
-                .Select(order => new OrderDto(
-                    order.Id,
-                    order.CustomerEmail,
-                    order.OrderDate,
-                    order.TotalAmount,
-                    order.Items.Select(item => new OrderItemDto(
-                        item.Id,
-                        item.BookId,
-                        item.Quantity,
-                        item.UnitPrice
-                    )).ToList()
-                ))
-                .ToListAsync(cancellationToken);
+            var orders = await _repository.GetAllWithItemsAsync(cancellationToken);
+
+            return orders.Select(order => new OrderDto(
+                order.Id,
+                order.CustomerEmail,
+                order.OrderDate,
+                order.TotalAmount,
+                order.Items.Select(item => new OrderItemDto(
+                    item.Id,
+                    item.BookId,
+                    item.Quantity,
+                    item.UnitPrice
+                )).ToList()
+            )).ToList();
         }
     }
 }
+
