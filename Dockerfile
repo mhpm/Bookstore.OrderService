@@ -1,9 +1,12 @@
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /app
 
-# Copiar nuget.config y el feed de NuGet local
+# Copiar nuget.config y configurar credenciales
+ARG NUGET_USERNAME
+ARG NUGET_PASSWORD
+ENV NUGET_USERNAME=$NUGET_USERNAME
+ENV NUGET_PASSWORD=$NUGET_PASSWORD
 COPY nuget.config ./
-COPY LocalNuGetFeed/ ./LocalNuGetFeed/
 
 # Copiar csproj y restaurar dependencias
 COPY src/OrderService/OrderService.csproj ./src/OrderService/
