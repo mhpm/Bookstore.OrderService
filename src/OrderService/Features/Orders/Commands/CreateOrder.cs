@@ -3,7 +3,6 @@ using MassTransit;
 using Shared;
 using OrderService.Data;
 using OrderService.Data.Repositories;
-using System.Linq;
 
 namespace OrderService.Features.Orders.Commands
 {
